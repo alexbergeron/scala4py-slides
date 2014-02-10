@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Scala for Python developers</title>
+
+		<meta name="description" content="Slides for talk @ Montreal Python 43">
+		<meta name="author" content="Alexandre Bergeron">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Scala for Python Developers</h1>
+					<p>
+						Alexandre Bergeron
+					<br>
+						Backend Developer @ Wajam
+					<br>
+						@AlexBergeron2
+					</p>
+					<br>
+					<p>
+						Montreal Python 43 - Artistic Baboon
+					<br>
+						February 10, 2014
+					</p>
+				</section>
+
+				<section>
+					<h2>About me</h2>
+					<ul>
+						<li>Bachelor degree in Software Engineering from ETS April 2012</li>
+						<li>Started coding in Python in 2007</li>
+						<li>Started working at Wajam in April 2012</li>
+						<li>Started coding in Scala same month</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>What is Scala</h2>
+					<ul>
+						<li>Statically-typed, object-oriented, functional &amp; imperative language</li>
+						<li>Compiles to the JVM - Can call Java libraries transparently</li>
+						<li>Type inference - Types are deducted, no need to specify them</li>
+						<li>Built for concurrency - parrallel collections, actors frameworks, asynchronous Futures</li>
+					</ul>
+				</section>
+
+				<section>
+					<section>
+						<h2>Some basics</h2>
+						<p>Values and variables - strong focus on immutability</p>
+						<pre><code>
+// Mutable 
+var mutableVariable = "Test" // Type String infered
+mutableVariable = "SomethingElse"
+
+// Immutable
+val immutableValue = 42 // Type Int infered
+//immutableValue = 0 // error: reassignment to val
+
+// We've got Java Arays - we just don't use them a lot
+val someArray = Array("Hello", "World")
+someArray(1) = "Scala" // They're mutable
+println(someAray.mkString(" "))
+						</code></pre>
+					</section>
+					<section>
+						<h2>Some basics</h2>
+						<p>Control statements</p>
+						<pre><code>
+val meetup = "Montreal Python"
+if (meetup.contains("Python") {
+  println("You can see me")
+} else {
+  // Dead code here
+}
+
+// if can also return a value, or be a one-liner
+val foo = if (presenterRunningOutOfImagination) bar else baz
+
+try {
+  // Something that might throw an exception
+} catch {
+  case e => // Handle that exception
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>Some basics</h2>
+						<p>More control statements</p>
+						<pre><code>
+// Scala also has while and do...while loops
+// But they're seen as bad practice and used mostly for optimizations
+while (someCondition) {
+  executeSomeOtherTasks()
+}
+
+for (i <- 1 to 5) println(i)
+// Syntactic sugar for
+(1 to 5).foreach(i => println(i))
+						</code></pre>
+					</section>
+					<section>
+						<h2>Some basics</h2>
+						<p>Function declaration</p>
+						<pre><code>
+// Our first function
+def multiply(x: Int, y: Int): Int = x * y
+multiply(2, 3)
+
+// Unit-returning function
+def show(i: Int): Unit = {
+  println("show(" + i + ")")
+}
+
+// Or, as an anonymous function
+def anon = (x: Int, y, Int) => x * y // Type Infered
+anon(2, 3)
+
+// Functions can take functions as a parameter
+def applyOperation(value: Int, oper: Int => Int): Int = oper(value)
+						</code></pre>
+					</section>
+					<section>
+						<h2>Some basics</h2>
+						<p>Object-oriented - class, object, extends</p>
+						<pre><code>
+abstract class Foo {
+  def a: String
+}
+
+// Classes can only inherit from one other class
+class Bar extends Foo {
+  def a = "Bar"
+}
+
+// Singleton objects - can behave like a class
+object Baz extends Foo {
+  def a = "Baz"
+}
+println(baz.a)
+// Companion objects can also be created for existing classes
+						</code></pre>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Similarities to Python</h2>
+						<h3>Collections</h3>
+						<p>Python</p>
+						<pre><code>
+# Lists - Ordered, duplicates allowed
+a_list = [1, 2, 3, 4]
+# Tuples - Ordered, fixed
+a_tuple = (1, 2, 3)
+a, b, c = a_tuple
+# Sets - Unordered, duplicates not allowed
+a_set = {1, 2, 3, 3} # {1, 2, 3}
+# Dicts - Binds keys to values
+a_dict = {"one": 1, "two": 2}
+						</code></pre>
+					</section>
+					<section>
+						<h2>Similarities to Python</h2>
+						<h3>Collections</h3>
+						<p>Scala</p>
+						<pre><code>
+// Collections are immutable by default
+// Mutable versions available
+// Seqs - Ordered, duplicates allowed
+val seq = Seq(1, 2, 3, 4)
+val list = List(1, 2, 3, 4) // 1 :: 2 :: 3 :: 4 :: Nil
+// Tuples - Ordered, fixed
+val tuple = (1, 2, 3)
+val (a, b, c) = tuple
+// Sets - Unordered, duplicates not allowed
+val set = Set(1, 2, 3, 3) // Set(1, 2, 3)
+// Map - Binds keys to values
+val map = Map("one" -> 1, "two" -> 2)
+						</code></pre>
+					</section>
+					<section>
+						<h2>Similarities to Python</h2>
+						<h3>List comprehensions</h3>
+						<p>Python</p>
+						<pre><code>
+[x * x for x in range(1, 4)]
+# [1, 4, 9]
+[x for x in range(1, 10) if x % 3 == 0]
+# [3, 6, 9]
+[(x, y) for x in range(1,5) for y in range(x, 5) if x + y == 5]
+# [(1, 4), (2, 3)]
+
+						</code></pre>
+					</section>
+					<section>
+						<h2>Similarities to Python</h2>
+						<h3>For comprehensions</h3>
+						<p>Scala</p>
+						<pre><code>
+for (x <- 1 to 3) yield x * x
+// Vector(1, 4, 9)
+
+for (x <- 1 to 10 if x % 3 == 0) yield x
+// Vector(3, 6, 9)
+
+for {
+  x <- 1 until 5
+  y <- x until 5
+  if x + y == 5
+} yield (x, y)
+// Vector((1,4), (2,3))
+						</code></pre>
+					</section>
+					<section>
+						<h2>Similarities to Python</h2>
+						<h3>Functional programming - map, filter</h3>
+						<p>Python</p>
+						<pre><code>
+map(lambda x: x * x, range(1, 4))
+# [1, 4, 9]
+filter(lambda x: x % 3 == 0, range(1,10))
+# [3, 6, 9]
+from itertools import combinations
+def sum_is_five(tuple):
+    x, y = tuple
+    return x < y and x + y == 5
+filter(sum_is_five, combinations(range(1, 5), 2))
+# [(1, 4), (2, 3)] 
+						</code></pre>
+					</section>
+					<section>
+						<h2>Similarities to Python</h2>
+						<h3>Functional programming - map, filter</h3>
+						<p>Scala</p>
+						<pre><code>
+(1 to 3).map(x => x * x)
+// Vector(1, 4, 9)
+(1 to 10).filter(_ % 3 == 0) // Implicit parameter
+// Vector(3, 6, 9)
+(1 until 5).combinations(2).filter(_.sum == 5).toList
+// List(Vector(1, 4), Vector(2, 3))
+// Or, closer to what the for-comprehension executes
+def sumIsFive(t: (Int, Int)) = {
+  val (x, y) = t
+  x + y == 5
+}
+(1 to 5).flatMap(x => (x to 5).map((x, _))).filter(sumIsFive)
+// Vector((1,4), (2,3))
+						</code></pre>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Distinctions</h2>
+						<p>Pattern matching</p>
+						<pre><code>
+// Looks like switch from Java
+def sign(n: Int) = n match {
+  case 0 => "zero"
+  // Supports guards
+  case n if < 0 => "negative"
+  case _ => "positive
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>Distinctions</h2>
+						<p>Pattern matching</p>
+						<pre><code>
+// Gets even better with extractors
+// Like when pattern matching with lists
+def sum(lst: List[Int]): Int = lst match {
+  case head :: tail => head + sum(tail)
+  case Nil => 0
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>Distinctions</h2>
+						<p>Option - Avoiding nulls</p>
+						<pre><code>
+// Option[A] type has two possible values
+// Some(value: A)
+// None
+// This allows to avoid nulls and NullPointerException
+def greet(name: Option[String]): Unit = {
+  println("Hello " + name.getOrElse("world"))
+}
+greet(Some("Python"))
+greet(None)
+						</code></pre>
+					</section>
+					<section>
+						<h2>Distinctions</h2>
+						<p>Option - Avoiding nulls</p>
+						<pre><code>
+// Option also fits into pattern matching
+def respond(result: Option[String]): Unit = result match {
+  case Some(r) => println("Response sent: " + r)
+  case None => println("No response sent")
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>Distinctions</h2>
+						<p>Try - Avoiding calls to try</p>
+						<pre><code>
+// Like Option, Try[A] has two possible values
+// Success(value: A)
+// Failure(t: Throwable)
+// And it can be used with pattern matching
+Try(4 / 2) // Success(2)
+Try(1 / 0) // Failure(java.lang.ArithmeticException: / by zero)
+						</code></pre>
+					</section>
+					<section>
+						<h2>Distinctions</h2>
+						<p>case class - Easy way to create class that integrates with Pattern Matching</p>
+						<pre><code>
+case class Person(name: String, city: String, job: Option[String])
+
+// Every parameters in that constructor is now an immutable field
+def makeStringForPerson(p: Person) = {
+  println(name + " - " job,getOrElse("unemployed") + " in " + city)
+}
+
+// You can also easily clone a case class
+def moveTo(p: Person, c: String) = p.copy(city = c)
+
+// As you'll see, you can also have case objects
+						</code></pre>
+					</section>
+					<section>
+						<h2>Distinctions</h2>
+						<p>Traits - Allows to inherit from multiple traits with implementations</p>
+						<pre><code>
+trait A {
+  def toImplement(): Int
+}
+trait B {
+  val value = 42
+  def implemented() = value
+}
+class C extends A with B {
+  def toImplement() = implemented()
+}
+						</code></pre>
+					</section>
+					<section>
+						<h2>Distinctions</h2>
+						<p>Traits - Allows to inherit from multiple traits with implementations</p>
+						<pre><code>
+// sealed = you can't implement this trait outside of this file
+// The + in front of means it's covariant.
+sealed trait Option[+A] {
+  def getOrElse(value: A) = this match {
+    case Some(v) => v
+    case None => value
+  }
+}
+case class Some[+A](value: A) extends Option[A]
+case object None extends Option[Nothing] // Nothing = Bottom type 
+						</code></pre>
+					</section>
+				</section>
+				<section>
+					<h2>Points of contention</h2>
+					<ul>
+						<li class="fragment">Static typing vs Dynamic Typing</li>
+						<li class="fragment">Code nesting vs Zen of Python (PEP-20)</li>
+						<li class="fragment">Readability from line conciseness and explicit types vs short methods and naming things </li>
+						<li class="fragment">More than one way to do it vs only one way to do it</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Read more about Scala</h2>
+					<ul>
+						<li>Scala School from Twitter - <a href="http://twitter.github.io/scala_school/">http://twitter.github.io/scala_school/</a></li>
+						<li>Functional Programming Principles in Scala on Coursera - <a href="https://www.coursera.org/course/progfun">https://www.coursera.org/course/progfun</a></li>
+						<li>Scala for the Impatient by Cay Horstmann - <a href="http://horstmann.com/scala/">http://horstmann.com/scala/</a></li>
+						<li>Programming in Scala by Martin Odersky, Lex Sppon and Bill Venners - <a href="http://www.artima.com/shop/programming_in_scala_2ed">http://www.artima.com/shop/programming_in_scala_2ed</a></li>
+					</ul>
+				</section>
+				<section>
+					<h1>Questions?</h1>
+					<h3>Thanks for listening</h3>
+					<p><small>Made with reveal.js</small></p>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: false,
+				slideNumber: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: 'fade', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
