@@ -97,7 +97,7 @@ println(someAray.mkString(" "))
 						<p>Control statements</p>
 						<pre><code>
 val meetup = "Montreal Python"
-if (meetup.contains("Python") {
+if (meetup.contains("Python")) {
   println("You can see me")
 } else {
   // Dead code here
@@ -350,7 +350,7 @@ case class Person(name: String, city: String, job: Option[String])
 
 // Every parameters in that constructor is now an immutable field
 def makeStringForPerson(p: Person) = {
-  println(name + " - " job,getOrElse("unemployed") + " in " + city)
+  println(p.name + " - " p.job,getOrElse("unemployed") + " in " + p.city)
 }
 
 // You can also easily clone a case class
